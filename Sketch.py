@@ -85,7 +85,7 @@ while True:
         elif event.type == pygame.MOUSEMOTION and drawing:
             current_pos = pygame.mouse.get_pos()
             if last_pos:
-                pygame.draw.line(screen, current_color, last_pos, current_pos, brush_size)
+                pygame.draw.circle(screen, current_color, current_pos, brush_size)
             last_pos = current_pos
         
         eraser_Button.handle_event(event)
