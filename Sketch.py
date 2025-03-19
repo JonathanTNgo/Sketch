@@ -17,11 +17,15 @@ pygame.display.set_caption("Mouse Drawing App")
 screen.fill(WHITE)
 
 # Variables
+max_brush_size = 50
+min_brush_size = 1
+
 drawing = False
 last_pos = None
 is_eraser = False
 current_color = BLACK
 is_eraser = False
+brush_size = 10
 
 class Button:
     def __init__(self, x, y, width, height, text, action):
@@ -45,14 +49,24 @@ def toggle_eraser():
     global is_eraser, current_color
     is_eraser = not is_eraser
     current_color = WHITE if is_eraser else BLACK
+    
+def increase_brush():
+    global brush_size
+    brush_size = min(brush_size + 2, max_brush_size)
+    
+def decrease_brush():
+    global brush_size
+    brush_size = max(brush_size - 2, min_brush_size)
 
-eraser_Button = Button(10,10, 60, 30, "Eraser", toggle_eraser)
+eraser_Button = Button(10, 10, 60, 30, "Eraser", toggle_eraser)
+increase_Button = Button(80, 10, 30, 30, "+", increase_brush)
+decrease_Button = Button(110, 10, 30, 30, "-", decrease_brush)
     
 # Main loop
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            pygame.quit()
+            pygame.quit()   
             sys.exit()
         
         if event.type == pygame.KEYDOWN:
@@ -71,13 +85,17 @@ while True:
         elif event.type == pygame.MOUSEMOTION and drawing:
             current_pos = pygame.mouse.get_pos()
             if last_pos:
-                pygame.draw.line(screen, current_color, last_pos, current_pos, 2)
+                pygame.draw.line(screen, current_color, last_pos, current_pos, brush_size)
             last_pos = current_pos
         
         eraser_Button.handle_event(event)
+        increase_Button.handle_event(event)
+        decrease_Button.handle_event(event)
 
     pygame.draw.rect(screen, WHITE, (0, 0, WIDTH, 50))
     eraser_Button.draw(screen)
+    increase_Button.draw(screen)
+    decrease_Button.draw(screen)
     
     # Update the display
     pygame.display.update()
